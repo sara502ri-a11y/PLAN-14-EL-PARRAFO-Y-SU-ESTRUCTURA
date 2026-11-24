@@ -1,0 +1,2712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planificación Diaria por Competencias — Colegio Montano</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       SISTEMA DE DISEÑO INSTITUCIONAL — COLEGIO MONTANO
+       Paleta estricta:
+       - Azul institucional: #1F3C88
+       - Azul secundario: #3F72AF
+       - Blanco puro: #FFFFFF (y superficie neutra sutil #F8FAFC para contraste)
+       - Amarillo institucional: #F2C94C
+       ========================================================================== */
+    :root {
+      --blue-primary: #1F3C88;
+      --blue-secondary: #3F72AF;
+      --white: #FFFFFF;
+      --surface-subtle: #F8FAFC;
+      --yellow-accent: #F2C94C;
+      --yellow-soft: rgba(242, 201, 76, 0.22);
+      --blue-soft: rgba(63, 114, 175, 0.10);
+      --blue-primary-soft: rgba(31, 60, 136, 0.08);
+      --text-dark: #1E293B;
+      --text-muted: #475569;
+      --border-light: #CBD5E1;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --shadow-card: 0 4px 18px rgba(31, 60, 136, 0.06);
+      --shadow-header: 0 8px 24px rgba(31, 60, 136, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--surface-subtle);
+      color: var(--text-dark);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 4rem;
+    }
+
+    h1, h2, h3, h4, .font-display {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    }
+
+    /* ==========================================================================
+       BARRA SUPERIOR DE HERRAMIENTAS INTERACTIVAS
+       ========================================================================== */
+    .toolbar-sticky {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: var(--white);
+      border-bottom: 2px solid var(--blue-secondary);
+      box-shadow: 0 2px 12px rgba(31, 60, 136, 0.08);
+      padding: 0.65rem 1.25rem;
+    }
+
+    .toolbar-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .save-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--blue-primary);
+      background: var(--blue-primary-soft);
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background-color: var(--yellow-accent);
+      border: 1.5px solid var(--blue-primary);
+      display: inline-block;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 0.5rem 0.9rem;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-decoration: none;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background-color: var(--blue-primary);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--blue-secondary);
+    }
+
+    .btn-secondary {
+      background-color: var(--white);
+      color: var(--blue-primary);
+      border-color: var(--blue-secondary);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--blue-soft);
+    }
+
+    .btn-accent {
+      background-color: var(--yellow-accent);
+      color: var(--blue-primary);
+      border-color: var(--blue-primary);
+      font-weight: 700;
+    }
+
+    .btn-accent:hover {
+      filter: brightness(0.96);
+    }
+
+    .btn-mode-active {
+      background-color: var(--blue-secondary);
+      color: var(--white);
+      border-color: var(--blue-primary);
+    }
+
+    /* ==========================================================================
+       CONTENEDOR PRINCIPAL Y ENCABEZADO INSTITUCIONAL
+       ========================================================================== */
+    .container {
+      max-width: 1180px;
+      margin: 1.5rem auto;
+      padding: 0 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .institutional-header {
+      background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-secondary) 100%);
+      color: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      box-shadow: var(--shadow-header);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 5px solid var(--yellow-accent);
+    }
+
+    .header-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-svg-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-md);
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+      border: 2.5px solid var(--yellow-accent);
+      flex-shrink: 0;
+      padding: 4px;
+    }
+
+    .brand-titles .institution-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--yellow-accent);
+      margin-bottom: 0.2rem;
+    }
+
+    .brand-titles h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--white);
+    }
+
+    .brand-titles p {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 0.2rem;
+    }
+
+    .duration-pill {
+      background-color: var(--white);
+      color: var(--blue-primary);
+      padding: 0.65rem 1.1rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      border: 2px solid var(--yellow-accent);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .duration-pill-icon {
+      background-color: var(--yellow-accent);
+      color: var(--blue-primary);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .duration-pill-text small {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--blue-secondary);
+      font-weight: 700;
+    }
+
+    .duration-pill-text strong {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--blue-primary);
+    }
+
+    /* Cuadrícula de Datos Generales Editables */
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .meta-item {
+      background-color: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 0.55rem 0.8rem;
+      transition: background 0.2s ease;
+    }
+
+    .meta-item.span-2 {
+      grid-column: span 2;
+    }
+
+    @media (max-width: 640px) {
+      .meta-item.span-2 {
+        grid-column: span 1;
+      }
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--yellow-accent);
+      font-weight: 700;
+      margin-bottom: 0.15rem;
+    }
+
+    .meta-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--white);
+      outline: none;
+      border-radius: 4px;
+      padding: 1px 4px;
+      margin: -1px -4px;
+      display: block;
+    }
+
+    /* ==========================================================================
+       INDICADOR VISUAL DE CAMPOS EDITABLES
+       ========================================================================== */
+    body.edit-mode [contenteditable="true"] {
+      outline: 1.5px dashed rgba(63, 114, 175, 0.55);
+      background-color: rgba(242, 201, 76, 0.08);
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+
+    body.edit-mode .institutional-header [contenteditable="true"] {
+      outline: 1.5px dashed var(--yellow-accent);
+      background-color: rgba(255, 255, 255, 0.16);
+    }
+
+    body.edit-mode [contenteditable="true"]:focus {
+      outline: 2px solid var(--blue-primary);
+      background-color: var(--white);
+      color: var(--text-dark);
+      box-shadow: 0 0 0 3px var(--yellow-soft);
+    }
+
+    body.edit-mode .institutional-header [contenteditable="true"]:focus {
+      color: var(--blue-primary);
+      background-color: var(--white);
+    }
+
+    /* ==========================================================================
+       TARJETAS DE SECCIÓN Y ENCABEZADOS DE BLOQUE
+       ========================================================================== */
+    .card {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background-color: var(--white);
+      border-bottom: 2px solid var(--blue-soft);
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-number {
+      background-color: var(--blue-primary);
+      color: var(--yellow-accent);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .card-header h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+    }
+
+    .card-badge {
+      font-size: 0.76rem;
+      font-weight: 700;
+      background-color: var(--yellow-soft);
+      color: var(--blue-primary);
+      border: 1px solid var(--yellow-accent);
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    /* ==========================================================================
+       BLOQUE 2: COMPETENCIA Y LOGRO DE APRENDIZAJE
+       ========================================================================== */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .highlight-box {
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      border-left: 5px solid var(--blue-primary);
+      background-color: var(--surface-subtle);
+    }
+
+    .highlight-box.accent-yellow {
+      border-left-color: var(--yellow-accent);
+      background-color: rgba(242, 201, 76, 0.09);
+    }
+
+    .highlight-box h3 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--blue-secondary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .highlight-box p {
+      font-size: 0.96rem;
+      color: var(--text-dark);
+    }
+
+    /* ==========================================================================
+       BLOQUE 3: COMPETENCIAS CLAVE Y BLANDAS
+       ========================================================================== */
+    .comp-column-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--white);
+      background-color: var(--blue-secondary);
+      padding: 0.55rem 1rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .comp-column-title span {
+      background-color: var(--yellow-accent);
+      color: var(--blue-primary);
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .comp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .comp-item {
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      padding: 0.8rem 0.95rem;
+      background-color: var(--white);
+      transition: border-color 0.2s;
+    }
+
+    .comp-item:hover {
+      border-color: var(--blue-secondary);
+    }
+
+    .comp-item-header {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .comp-check {
+      accent-color: var(--blue-primary);
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+    }
+
+    .comp-name {
+      font-weight: 700;
+      color: var(--blue-primary);
+      font-size: 0.94rem;
+    }
+
+    .comp-evidence {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      padding-left: 1.6rem;
+    }
+
+    .comp-item.unchecked {
+      opacity: 0.52;
+      background-color: var(--surface-subtle);
+    }
+
+    /* ==========================================================================
+       BLOQUE 4: HÁBITOS DEL MODELO FORMATIVO MONTANO
+       ========================================================================== */
+    .habits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .habit-card {
+      border: 1.5px solid var(--blue-secondary);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      background-color: var(--white);
+      position: relative;
+    }
+
+    .habit-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background-color: var(--yellow-accent);
+      color: var(--blue-primary);
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      margin-bottom: 0.5rem;
+    }
+
+    .habit-title {
+      font-weight: 700;
+      color: var(--blue-primary);
+      font-size: 1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .habit-action {
+      font-size: 0.89rem;
+      color: var(--text-dark);
+    }
+
+    /* ==========================================================================
+       BLOQUE 5: SECUENCIA DIDÁCTICA INTERACTIVA (IM - TP - TC - P = 50 MIN)
+       ========================================================================== */
+    .time-tracker-bar {
+      background-color: var(--blue-primary-soft);
+      border: 1.5px solid var(--blue-secondary);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .time-tracker-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .time-total-display {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      font-size: 0.95rem;
+    }
+
+    .time-badge-total {
+      background-color: var(--blue-primary);
+      color: var(--yellow-accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+
+    .time-badge-total.warning {
+      background-color: var(--yellow-accent);
+      color: var(--blue-primary);
+      border: 2px solid var(--blue-primary);
+    }
+
+    .time-alert-msg {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--blue-primary);
+    }
+
+    .progress-segments {
+      display: flex;
+      height: 14px;
+      border-radius: 999px;
+      overflow: hidden;
+      background-color: #E2E8F0;
+      border: 1px solid var(--blue-secondary);
+    }
+
+    .seg-im { background-color: var(--yellow-accent); transition: width 0.3s; }
+    .seg-tp { background-color: var(--blue-secondary); transition: width 0.3s; }
+    .seg-tc { background-color: var(--blue-primary); transition: width 0.3s; }
+    .seg-p  { background-color: #6488EA; transition: width 0.3s; }
+
+    /* Navegación de Pestañas de Momentos */
+    .sequence-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 2px solid #E2E8F0;
+      padding-bottom: 0.85rem;
+    }
+
+    .tab-btn {
+      flex: 1 1 170px;
+      background-color: var(--surface-subtle);
+      border: 1.5px solid #CBD5E1;
+      border-radius: var(--radius-md);
+      padding: 0.7rem 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--blue-secondary);
+      background-color: var(--blue-soft);
+    }
+
+    .tab-btn.active {
+      background-color: var(--blue-primary);
+      border-color: var(--blue-primary);
+      color: var(--white);
+      box-shadow: 0 4px 12px rgba(31, 60, 136, 0.22);
+    }
+
+    .tab-btn-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .tab-code {
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      color: var(--blue-secondary);
+    }
+
+    .tab-btn.active .tab-code {
+      color: var(--yellow-accent);
+    }
+
+    .tab-time {
+      font-size: 0.76rem;
+      font-weight: 700;
+      background-color: var(--yellow-soft);
+      color: var(--blue-primary);
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+    }
+
+    .tab-btn.active .tab-time {
+      background-color: var(--yellow-accent);
+      color: var(--blue-primary);
+    }
+
+    .tab-name {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--blue-primary);
+    }
+
+    .tab-btn.active .tab-name {
+      color: var(--white);
+    }
+
+    .tab-btn.view-all-btn {
+      flex: 0 1 auto;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--white);
+      border-color: var(--blue-secondary);
+      color: var(--blue-primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .tab-btn.view-all-btn.active {
+      background-color: var(--blue-secondary);
+      color: var(--white);
+    }
+
+    /* Paneles de Momento Didáctico */
+    .moment-panel {
+      display: none;
+      border: 1.5px solid var(--blue-secondary);
+      border-radius: var(--radius-md);
+      background-color: var(--white);
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    .moment-panel.active {
+      display: block;
+    }
+
+    .sequence-container.show-all .moment-panel {
+      display: block;
+    }
+
+    .moment-header {
+      background-color: var(--blue-secondary);
+      color: var(--white);
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .moment-header-title {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .moment-pill {
+      background-color: var(--yellow-accent);
+      color: var(--blue-primary);
+      font-weight: 800;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .moment-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .moment-duration-control {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      background-color: rgba(255, 255, 255, 0.16);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .moment-duration-input {
+      width: 52px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--blue-primary);
+      background-color: var(--yellow-accent);
+      border: 1.5px solid var(--white);
+      border-radius: 4px;
+      padding: 0.15rem;
+    }
+
+    .moment-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .activity-banner {
+      background-color: var(--surface-subtle);
+      border-left: 4px solid var(--yellow-accent);
+      padding: 0.85rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .activity-banner-label {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      color: var(--blue-secondary);
+    }
+
+    .activity-banner-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--blue-primary);
+      margin-top: 0.1rem;
+    }
+
+    .moment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .detail-box {
+      border: 1px solid #E2E8F0;
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1rem;
+      background-color: var(--white);
+    }
+
+    .detail-box.full-span {
+      grid-column: 1 / -1;
+    }
+
+    .detail-box h4 {
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--blue-primary);
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .detail-box h4::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background-color: var(--yellow-accent);
+      border: 1px solid var(--blue-primary);
+    }
+
+    .detail-box p, .detail-box ul, .detail-box ol {
+      font-size: 0.91rem;
+      color: var(--text-dark);
+    }
+
+    .detail-box ul, .detail-box ol {
+      padding-left: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.65rem;
+      margin-top: 0.5rem;
+    }
+
+    .role-chip {
+      background-color: var(--blue-primary-soft);
+      border: 1px solid var(--blue-secondary);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .role-chip strong {
+      display: block;
+      color: var(--blue-primary);
+      margin-bottom: 0.15rem;
+    }
+
+    /* ==========================================================================
+       BLOQUE 6: RECURSOS DIDÁCTICOS
+       ========================================================================== */
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .resource-pill {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid #CBD5E1;
+      background-color: var(--surface-subtle);
+    }
+
+    .resource-icon {
+      background-color: var(--yellow-accent);
+      color: var(--blue-primary);
+      font-weight: 800;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.8rem;
+    }
+
+    .resource-text {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    /* ==========================================================================
+       BLOQUE 7: EVALUACIÓN DEL APRENDIZAJE (3 MOMENTOS)
+       ========================================================================== */
+    .eval-moments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .eval-card {
+      border: 1.5px solid #CBD5E1;
+      border-top: 4px solid var(--blue-secondary);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      background-color: var(--white);
+    }
+
+    .eval-card.sumativa {
+      border-top-color: var(--blue-primary);
+    }
+
+    .eval-type-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      background-color: var(--blue-soft);
+      color: var(--blue-primary);
+      margin-bottom: 0.45rem;
+    }
+
+    .eval-card h3 {
+      font-size: 1rem;
+      color: var(--blue-primary);
+      margin-bottom: 0.4rem;
+    }
+
+    .eval-card p {
+      font-size: 0.89rem;
+      color: var(--text-dark);
+    }
+
+    .feedback-improvement-box {
+      background-color: rgba(242, 201, 76, 0.14);
+      border: 1.5px solid var(--yellow-accent);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+    }
+
+    .feedback-improvement-box h4 {
+      color: var(--blue-primary);
+      font-size: 0.95rem;
+      margin-bottom: 0.35rem;
+    }
+
+    /* ==========================================================================
+       BLOQUE 8: INSTRUMENTO DE EVALUACIÓN INTERACTIVO (LISTA DE COTEJO)
+       ========================================================================== */
+    .rubric-summary-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background-color: var(--blue-primary);
+      color: var(--white);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+    }
+
+    .rubric-score-box {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .score-circle {
+      background-color: var(--yellow-accent);
+      color: var(--blue-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      padding: 0.45rem 0.95rem;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--white);
+    }
+
+    .rubric-recommendation {
+      font-size: 0.88rem;
+      max-width: 580px;
+      color: rgba(255, 255, 255, 0.95);
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #CBD5E1;
+      border-radius: var(--radius-md);
+    }
+
+    table.checklist-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    table.checklist-table th {
+      background-color: var(--blue-secondary);
+      color: var(--white);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.75rem 0.9rem;
+      text-align: left;
+    }
+
+    table.checklist-table td {
+      padding: 0.75rem 0.9rem;
+      border-bottom: 1px solid #E2E8F0;
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+
+    table.checklist-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-selector {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .status-opt {
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      border: 1.5px solid #CBD5E1;
+      background-color: var(--white);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .status-opt:hover {
+      border-color: var(--blue-secondary);
+    }
+
+    .status-opt.selected-logrado {
+      background-color: var(--blue-primary);
+      border-color: var(--blue-primary);
+      color: var(--white);
+    }
+
+    .status-opt.selected-proceso {
+      background-color: var(--yellow-accent);
+      border-color: var(--blue-primary);
+      color: var(--blue-primary);
+    }
+
+    .status-opt.selected-apoyo {
+      background-color: var(--surface-subtle);
+      border-color: var(--blue-secondary);
+      color: var(--blue-secondary);
+      text-decoration: underline;
+    }
+
+    .btn-remove-row {
+      background: transparent;
+      border: none;
+      color: var(--blue-secondary);
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0.25rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    .btn-remove-row:hover {
+      background-color: var(--blue-soft);
+      color: var(--blue-primary);
+    }
+
+    .rubric-actions {
+      margin-top: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    /* ==========================================================================
+       BLOQUE 9: OBSERVACIONES Y REFLEXIÓN DOCENTE
+       ========================================================================== */
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1rem;
+    }
+
+    .reflection-box {
+      border: 1px solid #CBD5E1;
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      background-color: var(--surface-subtle);
+    }
+
+    .reflection-box label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      margin-bottom: 0.45rem;
+    }
+
+    .reflection-area {
+      min-height: 78px;
+      background-color: var(--white);
+      border: 1px solid #CBD5E1;
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.8rem;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+    }
+
+    .signatures-row {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px dashed #CBD5E1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .signature-line {
+      border-top: 1.5px solid var(--blue-primary);
+      padding-top: 0.45rem;
+      margin-top: 2rem;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--blue-primary);
+    }
+
+    /* ==========================================================================
+       MODAL DE CONFIRMACIÓN PERSONALIZADO Y NOTIFICACIÓN TOAST
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(31, 60, 136, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      max-width: 440px;
+      width: 100%;
+      padding: 1.5rem;
+      border-top: 5px solid var(--yellow-accent);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-box h3 {
+      color: var(--blue-primary);
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-box p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.65rem;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      background-color: var(--blue-primary);
+      color: var(--white);
+      border-left: 5px solid var(--yellow-accent);
+      padding: 0.75rem 1.15rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(31, 60, 136, 0.3);
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.25s ease;
+      z-index: 90;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       ESTILOS DE IMPRESIÓN Y EXPORTACIÓN PDF (@media print)
+       ========================================================================== */
+    @media print {
+      @page {
+        size: letter portrait;
+        margin: 1.1cm;
+      }
+
+      body {
+        background-color: var(--white) !important;
+        padding-bottom: 0 !important;
+        font-size: 10pt;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .no-print,
+      .toolbar-sticky,
+      .sequence-tabs,
+      .rubric-actions,
+      .btn-remove-row,
+      .toast,
+      .modal-backdrop {
+        display: none !important;
+      }
+
+      .container {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 0.9rem !important;
+      }
+
+      .card,
+      .moment-panel,
+      .eval-card,
+      .habit-card,
+      .highlight-box {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        box-shadow: none !important;
+      }
+
+      /* Expandir obligatoriamente TODOS los momentos didácticos al imprimir */
+      .moment-panel {
+        display: block !important;
+        margin-bottom: 0.85rem !important;
+      }
+
+      [contenteditable="true"] {
+        outline: none !important;
+        background-color: transparent !important;
+      }
+
+      .institutional-header {
+        box-shadow: none !important;
+        padding: 1.1rem 1.3rem !important;
+      }
+
+      .moment-duration-input {
+        border: none !important;
+        background: transparent !important;
+        color: var(--white) !important;
+        width: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="edit-mode">
+
+  <!-- ========================================================================
+       BARRA SUPERIOR DE ACCIONES DEL DOCENTE
+       ======================================================================== -->
+  <header class="toolbar-sticky no-print" role="banner">
+    <div class="toolbar-inner">
+      <div class="save-status" id="saveStatus">
+        <span class="status-dot"></span>
+        <span id="saveStatusText">Plan N.º 14 listo · Guardado automático activo</span>
+      </div>
+
+      <div class="toolbar-actions">
+        <button type="button" class="btn btn-mode-active" id="toggleEditBtn" title="Alternar entre modo edición y vista previa de lectura">
+          ✎ Modo Edición: Activo
+        </button>
+        <button type="button" class="btn btn-secondary" id="manualSaveBtn" title="Guardar cambios en el navegador">
+          💾 Guardar cambios
+        </button>
+        <button type="button" class="btn btn-secondary" id="exportHtmlBtn" title="Descargar copia HTML editable con tus cambios">
+          ⬇ Exportar archivo HTML
+        </button>
+        <button type="button" class="btn btn-accent" id="printPdfBtn" title="Imprimir o guardar en formato PDF completo">
+          🖨 Imprimir / Guardar PDF
+        </button>
+        <button type="button" class="btn btn-secondary" id="resetModalBtn" title="Restaurar los valores originales de la clase">
+          ↺ Restablecer plantilla
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="planDocument">
+
+    <!-- ======================================================================
+         1. ENCABEZADO INSTITUCIONAL Y DATOS GENERALES EDITABLES
+         ====================================================================== -->
+    <section class="institutional-header" aria-label="Encabezado Institucional Colegio Montano">
+      <div class="header-top">
+        <div class="brand-block">
+          <div class="logo-svg-wrap" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="54" height="54" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M32 4L56 14V31C56 46.2 45.6 56.8 32 60C18.4 56.8 8 46.2 8 31V14L32 4Z" fill="#1F3C88" stroke="#3F72AF" stroke-width="2.5"/>
+              <path d="M16 42L26 26L33 35L40 23L48 42H16Z" fill="#F2C94C"/>
+              <circle cx="43" cy="17" r="3.5" fill="#FFFFFF"/>
+              <path d="M18 46H46" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="brand-titles">
+            <div class="institution-name" contenteditable="true" data-field="institucion">COLEGIO MONTANO</div>
+            <h1 contenteditable="true" data-field="titulo_plan">Planificación Diaria por Competencias — Modelo Pedagógico Montano</h1>
+            <p contenteditable="true" data-field="subtitulo_plan">Diseño instruccional activo · Modalidad Presencial · Excelencia académica y formativa</p>
+          </div>
+        </div>
+
+        <div class="duration-pill" title="Duración oficial de la sesión de clase">
+          <div class="duration-pill-icon">⏱</div>
+          <div class="duration-pill-text">
+            <small>Total Sesión</small>
+            <strong><span id="headerDurationValue" contenteditable="true" data-field="duracion_oficial">50</span> minutos</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Colegio</span>
+          <span class="meta-value" contenteditable="true" data-field="colegio">Montano</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Modalidad</span>
+          <span class="meta-value" contenteditable="true" data-field="modalidad">Presencial</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Materia</span>
+          <span class="meta-value" contenteditable="true" data-field="materia">Comunicación y Lenguaje</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Grado</span>
+          <span class="meta-value" contenteditable="true" data-field="grado">Tercero primaria</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Unidad</span>
+          <span class="meta-value" contenteditable="true" data-field="unidad">1</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Número de plan</span>
+          <span class="meta-value" contenteditable="true" data-field="num_plan">14</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Fecha</span>
+          <span class="meta-value" contenteditable="true" data-field="fecha">Febrero 2027</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Docente</span>
+          <span class="meta-value" contenteditable="true" data-field="docente">Sara Rivera</span>
+        </div>
+        <div class="meta-item span-2">
+          <span class="meta-label">Tema de la Sesión</span>
+          <span class="meta-value" contenteditable="true" data-field="tema">El párrafo y su estructura (idea principal, ideas secundarias y signos de cierre)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         2. COMPETENCIA Y LOGRO DE APRENDIZAJE
+         ====================================================================== -->
+    <section class="card" aria-labelledby="sec2-title">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="section-number">2</span>
+          <h2 id="sec2-title">Competencia y Logro de Aprendizaje</h2>
+        </div>
+        <span class="card-badge">Alineación Curricular · 3.º Primaria</span>
+      </div>
+      <div class="card-body">
+        <div class="two-col-grid">
+          <div class="highlight-box">
+            <h3>🎯 Competencia de Aprendizaje</h3>
+            <p contenteditable="true" data-field="competencia">
+              <strong>Analiza y construye</strong> párrafos coherentes sobre situaciones de su entorno cotidiano, organizando una idea principal e ideas secundarias con adecuada puntuación y coherencia textual.
+            </p>
+          </div>
+          <div class="highlight-box accent-yellow">
+            <h3>✅ Logro de Aprendizaje (Observable en 50 min)</h3>
+            <p contenteditable="true" data-field="logro">
+              Al finalizar los <strong>50 minutos</strong>, el estudiante identifica la idea principal y dos ideas secundarias en textos cortos y redacta un párrafo estructurado de <strong>3 a 4 oraciones</strong> sobre un tema cotidiano con mayúscula inicial, punto y seguido y punto final.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         3. COMPETENCIAS CLAVE Y BLANDAS
+         ====================================================================== -->
+    <section class="card" aria-labelledby="sec3-title">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="section-number">3</span>
+          <h2 id="sec3-title">Competencias a Desarrollar en la Sesión</h2>
+        </div>
+        <span class="card-badge">Selecciona o edita las evidencias</span>
+      </div>
+      <div class="card-body">
+        <div class="two-col-grid">
+          <!-- Columna Competencias Clave -->
+          <div>
+            <div class="comp-column-title">
+              Competencias Clave
+              <span>Cognitivas y Metodológicas</span>
+            </div>
+            <div class="comp-list">
+              <div class="comp-item" data-comp-id="cc1">
+                <div class="comp-item-header">
+                  <input type="checkbox" class="comp-check" checked aria-label="Activar Pensamiento crítico">
+                  <span class="comp-name" contenteditable="true" data-field="cc1_name">Pensamiento crítico</span>
+                </div>
+                <p class="comp-evidence" contenteditable="true" data-field="cc1_ev">
+                  Distingue la oración que contiene la idea central de un párrafo frente a las oraciones de apoyo o detalles, y detecta oraciones intrusas que rompen la unidad temática.
+                </p>
+              </div>
+
+              <div class="comp-item" data-comp-id="cc2">
+                <div class="comp-item-header">
+                  <input type="checkbox" class="comp-check" checked aria-label="Activar Resolución de problemas">
+                  <span class="comp-name" contenteditable="true" data-field="cc2_name">Resolución de problemas</span>
+                </div>
+                <p class="comp-evidence" contenteditable="true" data-field="cc2_ev">
+                  Reconstruye mensajes fragmentados ordenando lógicamente sus oraciones y conectando datos sueltos para formar un párrafo comprensible.
+                </p>
+              </div>
+
+              <div class="comp-item" data-comp-id="cc3">
+                <div class="comp-item-header">
+                  <input type="checkbox" class="comp-check" checked aria-label="Activar Trabajo en equipo">
+                  <span class="comp-name" contenteditable="true" data-field="cc3_name">Trabajo en equipo</span>
+                </div>
+                <p class="comp-evidence" contenteditable="true" data-field="cc3_ev">
+                  Co-construye un párrafo informativo en tríos asignados por el docente, asumiendo responsabilidades específicas de tiempo, cohesión y revisión ortográfica.
+                </p>
+              </div>
+
+              <div class="comp-item" data-comp-id="cc4">
+                <div class="comp-item-header">
+                  <input type="checkbox" class="comp-check" checked aria-label="Activar Creatividad">
+                  <span class="comp-name" contenteditable="true" data-field="cc4_name">Creatividad</span>
+                </div>
+                <p class="comp-evidence" contenteditable="true" data-field="cc4_ev">
+                  Redacta oraciones originales y ejemplos descriptivos propios sobre su recreo, su mascota o el cuidado del entorno escolar.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Columna Competencias Blandas -->
+          <div>
+            <div class="comp-column-title">
+              Competencias Blandas
+              <span>Socioemocionales y Comunicativas</span>
+            </div>
+            <div class="comp-list">
+              <div class="comp-item" data-comp-id="cb1">
+                <div class="comp-item-header">
+                  <input type="checkbox" class="comp-check" checked aria-label="Activar Comunicación">
+                  <span class="comp-name" contenteditable="true" data-field="cb1_name">Comunicación</span>
+                </div>
+                <p class="comp-evidence" contenteditable="true" data-field="cb1_ev">
+                  Expresa sus ideas de forma ordenada tanto por escrito (estructura del párrafo) como oralmente al justificar sus decisiones ante su trío y la clase.
+                </p>
+              </div>
+
+              <div class="comp-item" data-comp-id="cb2">
+                <div class="comp-item-header">
+                  <input type="checkbox" class="comp-check" checked aria-label="Activar Toma de decisiones">
+                  <span class="comp-name" contenteditable="true" data-field="cb2_name">Toma de decisiones</span>
+                </div>
+                <p class="comp-evidence" contenteditable="true" data-field="cb2_ev">
+                  Selecciona qué información constituye la idea principal del texto y qué detalles complementarios fortalecen mejor el mensaje del equipo.
+                </p>
+              </div>
+
+              <div class="comp-item" data-comp-id="cb3">
+                <div class="comp-item-header">
+                  <input type="checkbox" class="comp-check" checked aria-label="Activar Flexibilidad">
+                  <span class="comp-name" contenteditable="true" data-field="cb3_name">Flexibilidad</span>
+                </div>
+                <p class="comp-evidence" contenteditable="true" data-field="cb3_ev">
+                  Incorpora las sugerencias del Revisor de estructura y ortografía para mejorar la redacción final sin resistencia.
+                </p>
+              </div>
+
+              <div class="comp-item unchecked" data-comp-id="cb4">
+                <div class="comp-item-header">
+                  <input type="checkbox" class="comp-check" aria-label="Activar Inteligencia emocional">
+                  <span class="comp-name" contenteditable="true" data-field="cb4_name">Inteligencia emocional</span>
+                </div>
+                <p class="comp-evidence" contenteditable="true" data-field="cb4_ev">
+                  Mantiene la calma, el respeto y la disposición colaborativa al trabajar con compañeros asignados fuera de su círculo habitual de afinidad.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         4. HÁBITOS DEL MODELO FORMATIVO MONTANO
+         ====================================================================== -->
+    <section class="card" aria-labelledby="sec4-title">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="section-number">4</span>
+          <h2 id="sec4-title">Hábitos del Modelo Formativo Montano</h2>
+        </div>
+        <span class="card-badge">Formación del Carácter en Acción</span>
+      </div>
+      <div class="card-body">
+        <div class="habits-grid">
+          <div class="habit-card">
+            <span class="habit-tag" contenteditable="true" data-field="hab1_tag">★ Hábito 2 · TP</span>
+            <h3 class="habit-title" contenteditable="true" data-field="hab1_title">Comenzar con un fin en mente</h3>
+            <p class="habit-action" contenteditable="true" data-field="hab1_desc">
+              Antes de escribir su párrafo individual en el Trabajo Personal, el estudiante define primero cuál será su <strong>idea principal</strong> (el mensaje central) para que todas sus oraciones siguientes apunten hacia ella.
+            </p>
+          </div>
+
+          <div class="habit-card">
+            <span class="habit-tag" contenteditable="true" data-field="hab2_tag">★ Hábito 5 · TC</span>
+            <h3 class="habit-title" contenteditable="true" data-field="hab2_title">Buscar primero entender, luego ser entendido</h3>
+            <p class="habit-action" contenteditable="true" data-field="hab2_desc">
+              Durante el Trabajo Cooperativo, los integrantes escuchan activamente las propuestas de oración de sus dos compañeros antes de redactar o corregir en el papelógrafo.
+            </p>
+          </div>
+
+          <div class="habit-card">
+            <span class="habit-tag" contenteditable="true" data-field="hab3_tag">★ Hábito 6 · TC</span>
+            <h3 class="habit-title" contenteditable="true" data-field="hab3_title">Sinergizar</h3>
+            <p class="habit-action" contenteditable="true" data-field="hab3_desc">
+              Los tríos integran los aportes de sus tres roles (Coordinador, Constructor y Revisor) para producir un párrafo colectivo más claro, completo y coherente que el que lograrían de forma aislada.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         5. SECUENCIA DIDÁCTICA INTERACTIVA (IM - TP - TC - P = 50 MINUTOS)
+         ====================================================================== -->
+    <section class="card" aria-labelledby="sec5-title">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="section-number">5</span>
+          <h2 id="sec5-title">Secuencia Didáctica Interactiva (IM – TP – TC – P)</h2>
+        </div>
+        <span class="card-badge">Total Sesión: 50 minutos</span>
+      </div>
+      <div class="card-body">
+
+        <!-- Barra de control y balance temporal en tiempo real -->
+        <div class="time-tracker-bar">
+          <div class="time-tracker-top">
+            <div class="time-total-display">
+              <span>Total Sesión:</span>
+              <span class="time-badge-total" id="totalMinutesBadge">50 / 50 min</span>
+            </div>
+            <div class="time-alert-msg" id="timeBalanceMessage">
+              ✓ Distribución exacta: 8 min (IM) + 15 min (TP) + 20 min (TC) + 7 min (P) = 50 min.
+            </div>
+          </div>
+          <div class="progress-segments" aria-hidden="true">
+            <div class="seg-im" id="barIM" style="width: 16%;" title="IM: 8 min"></div>
+            <div class="seg-tp" id="barTP" style="width: 30%;" title="TP: 15 min"></div>
+            <div class="seg-tc" id="barTC" style="width: 40%;" title="TC: 20 min"></div>
+            <div class="seg-p"  id="barP"  style="width: 14%;" title="P: 7 min"></div>
+          </div>
+        </div>
+
+        <!-- Botones de navegación entre momentos -->
+        <nav class="sequence-tabs no-print" aria-label="Navegación por momentos didácticos">
+          <button type="button" class="tab-btn active" data-target="panel-im">
+            <span class="tab-btn-top">
+              <span class="tab-code">1. IM</span>
+              <span class="tab-time" id="tabTimeIM">8 min</span>
+            </span>
+            <span class="tab-name">Introducción Motivante</span>
+          </button>
+
+          <button type="button" class="tab-btn" data-target="panel-tp">
+            <span class="tab-btn-top">
+              <span class="tab-code">2. TP</span>
+              <span class="tab-time" id="tabTimeTP">15 min</span>
+            </span>
+            <span class="tab-name">Trabajo Personal</span>
+          </button>
+
+          <button type="button" class="tab-btn" data-target="panel-tc">
+            <span class="tab-btn-top">
+              <span class="tab-code">3. TC</span>
+              <span class="tab-time" id="tabTimeTC">20 min</span>
+            </span>
+            <span class="tab-name">Trabajo Cooperativo</span>
+          </button>
+
+          <button type="button" class="tab-btn" data-target="panel-p">
+            <span class="tab-btn-top">
+              <span class="tab-code">4. P</span>
+              <span class="tab-time" id="tabTimeP">7 min</span>
+            </span>
+            <span class="tab-name">Plenaria y Cierre</span>
+          </button>
+
+          <button type="button" class="tab-btn view-all-btn" id="viewAllMomentsBtn" title="Mostrar los 4 momentos simultáneamente">
+            ☰ Ver todos los momentos
+          </button>
+        </nav>
+
+        <!-- Contenedor de paneles de los 4 momentos -->
+        <div class="sequence-container" id="sequenceContainer">
+
+          <!-- MOMENTO 1: IM (8 MINUTOS) -->
+          <article class="moment-panel active" id="panel-im">
+            <div class="moment-header">
+              <div class="moment-header-title">
+                <span class="moment-pill">IM</span>
+                <h3>Introducción Motivante</h3>
+              </div>
+              <div class="moment-duration-control">
+                <label for="inputTimeIM">Duración:</label>
+                <input type="number" id="inputTimeIM" class="moment-duration-input" value="8" min="1" max="50" data-moment="im">
+                <span>min</span>
+              </div>
+            </div>
+            <div class="moment-body">
+              <div class="activity-banner">
+                <div class="activity-banner-label">Nombre de la Actividad</div>
+                <div class="activity-banner-title" contenteditable="true" data-field="im_nombre">
+                  "El rompecabezas del mensaje perdido"
+                </div>
+              </div>
+
+              <div class="moment-grid">
+                <div class="detail-box">
+                  <h4>Propósito Didáctico</h4>
+                  <p contenteditable="true" data-field="im_proposito">
+                    Activar conocimientos previos sobre la oración y despertar la curiosidad mediante un reto manipulativo que demuestre cómo varias oraciones ordenadas en torno a una misma idea forman un párrafo con sentido completo.
+                  </p>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Distribución Exacta de los 8 Minutos</h4>
+                  <ul contenteditable="true" data-field="im_tiempo_desglose">
+                    <li><strong>2 min:</strong> Presentación del caso problema y lectura de tiras desordenadas en pizarra.</li>
+                    <li><strong>3 min:</strong> Ordenamiento participativo e identificación de la idea central y la oración intrusa.</li>
+                    <li><strong>3 min:</strong> Construcción visual de la anatomía del párrafo (Idea Principal + Ideas Secundarias + Puntuación).</li>
+                  </ul>
+                </div>
+
+                <div class="detail-box full-span">
+                  <h4>Instrucciones Paso a Paso</h4>
+                  <ol contenteditable="true" data-field="im_pasos">
+                    <li>La docente pega en desorden 5 tiras de cartulina en la pizarra con las siguientes oraciones: <em>(A) "Además, tienen un olfato muy desarrollado para encontrar comida." (B) "Los perros son mascotas muy leales e inteligentes." (C) "Por eso, debemos cuidarlos con cariño y responsabilidad." (D) "También pueden aprender trucos y acompañar a sus dueños." (E) "Los planetas giran alrededor del Sol."</em></li>
+                    <li>Pregunta al grupo: <em>¿Podemos entender el mensaje así como está? ¿Cuál oración no pertenece a este grupo y por qué? ¿Qué oración resume de qué trata todo el mensaje?</em></li>
+                    <li>Cuatro voluntarios pasan a retirar la oración intrusa (E) y ordenan las tiras en la pizarra colocando arriba la <strong>Idea Principal</strong> (B) y debajo las <strong>Ideas Secundarias</strong> (D, A, C) conectadas con punto y seguido.</li>
+                    <li>La docente enmarca el bloque resultante con marcador amarillo y presenta visualmente los tres elementos clave: <strong>1) Sangría o mayúscula inicial, 2) Idea principal + ideas secundarias, 3) Punto y seguido / punto final</strong>.</li>
+                  </ol>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Recursos del Momento</h4>
+                  <p contenteditable="true" data-field="im_recursos">
+                    5 tiras de cartulina blanca con oraciones impresas, cinta adhesiva, pizarra y marcadores azul y amarillo institucional.
+                  </p>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Evidencia de Participación y Hábito Relacionado</h4>
+                  <p contenteditable="true" data-field="im_evidencia">
+                    <strong>Evidencia:</strong> Ordenamiento correcto de las tiras en pizarra y justificación oral al descartar la oración intrusa.<br>
+                    <strong>Hábito relacionado:</strong> <em>Hábito 1 (Ser proactivo)</em> al proponer soluciones para reconstruir el mensaje desordenado.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- MOMENTO 2: TP (15 MINUTOS) -->
+          <article class="moment-panel" id="panel-tp">
+            <div class="moment-header">
+              <div class="moment-header-title">
+                <span class="moment-pill">TP</span>
+                <h3>Trabajo Personal</h3>
+              </div>
+              <div class="moment-duration-control">
+                <label for="inputTimeTP">Duración:</label>
+                <input type="number" id="inputTimeTP" class="moment-duration-input" value="15" min="1" max="50" data-moment="tp">
+                <span>min</span>
+              </div>
+            </div>
+            <div class="moment-body">
+              <div class="activity-banner">
+                <div class="activity-banner-label">Nombre de la Actividad</div>
+                <div class="activity-banner-title" contenteditable="true" data-field="tp_nombre">
+                  "Radiografía de un párrafo y mi primera creación"
+                </div>
+              </div>
+
+              <div class="moment-grid">
+                <div class="detail-box">
+                  <h4>Propósito Didáctico</h4>
+                  <p contenteditable="true" data-field="tp_proposito">
+                    Desarrollar la comprensión individual mediante el análisis estructural de un texto breve y la producción escrita autónoma de un párrafo cotidiano coherente y correctamente puntuado.
+                  </p>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Distribución Exacta de los 15 Minutos</h4>
+                  <ul contenteditable="true" data-field="tp_tiempo_desglose">
+                    <li><strong>3 min:</strong> Lectura comprensiva de la guía impresa y definición de la meta (Hábito 2).</li>
+                    <li><strong>6 min:</strong> Parte 1: Radiografía por colores (subrayar idea principal e ideas secundarias).</li>
+                    <li><strong>6 min:</strong> Parte 2: Redacción individual de un párrafo de 3 a 4 oraciones y autochequeo.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-box full-span">
+                  <h4>Instrucciones Paso a Paso</h4>
+                  <ol contenteditable="true" data-field="tp_pasos">
+                    <li>Cada estudiante recibe la guía impresa <em>"Laboratorio del Párrafo"</em> y lee en silencio las instrucciones.</li>
+                    <li><strong>Parte 1 — Radiografía por colores (6 min):</strong> Lee un párrafo breve titulado <em>"Los árboles de nuestra escuela"</em>. Con crayón o resaltador <strong>amarillo</strong> subraya la <strong>idea principal</strong> (la oración más importante que resume el tema); con color <strong>azul</strong> subraya <strong>dos ideas secundarias</strong> que explican o dan ejemplos; y encierra en un círculo rojo los <strong>puntos y seguido</strong> y el <strong>punto final</strong>.</li>
+                    <li><strong>Parte 2 — Mi primera creación (6 min):</strong> Elige uno de dos temas cercanos: <em>"Mi momento favorito del recreo"</em> o <em>"Mi mascota / animal favorito"</em>. Escribe primero su idea principal en un recuadro guía (Hábito 2: Comenzar con un fin en mente) y luego redacta en su cuaderno un párrafo completo de <strong>3 a 4 oraciones</strong> relacionadas entre sí.</li>
+                    <li>Al finalizar, marca con ✔ su propia lista de autoverificación (mayúscula inicial, oraciones conectadas al mismo tema, punto y seguido y punto final).</li>
+                  </ol>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Recursos y Producto Individual Verificable</h4>
+                  <p contenteditable="true" data-field="tp_producto">
+                    <strong>Recursos:</strong> Guía impresa "Laboratorio del Párrafo", cuaderno, lápiz, crayones/resaltadores amarillo y azul.<br>
+                    <strong>Producto verificable:</strong> Párrafo analizado por colores en la guía y párrafo original de 3 a 4 oraciones redactado en el cuaderno.
+                  </p>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Criterios de Seguimiento Docente</h4>
+                  <p contenteditable="true" data-field="tp_criterios">
+                    La docente monitorea los escritorios verificando: (1) identificación precisa de la idea principal, (2) unidad temática entre las 3-4 oraciones escritas (sin salirse del tema), y (3) uso correcto de mayúscula inicial y puntos.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- MOMENTO 3: TC (20 MINUTOS) -->
+          <article class="moment-panel" id="panel-tc">
+            <div class="moment-header">
+              <div class="moment-header-title">
+                <span class="moment-pill">TC</span>
+                <h3>Trabajo Cooperativo</h3>
+              </div>
+              <div class="moment-duration-control">
+                <label for="inputTimeTC">Duración:</label>
+                <input type="number" id="inputTimeTC" class="moment-duration-input" value="20" min="1" max="50" data-moment="tc">
+                <span>min</span>
+              </div>
+            </div>
+            <div class="moment-body">
+              <div class="activity-banner">
+                <div class="activity-banner-label">Nombre de la Actividad</div>
+                <div class="activity-banner-title" contenteditable="true" data-field="tc_nombre">
+                  "Arquitectos de párrafos en acción"
+                </div>
+              </div>
+
+              <div class="moment-grid">
+                <div class="detail-box">
+                  <h4>Propósito Didáctico</h4>
+                  <p contenteditable="true" data-field="tc_proposito">
+                    Construir colaborativamente un párrafo informativo coherente a partir de datos reales del entorno escolar, fortaleciendo la sinergia, la escucha activa y la coevaluación entre pares.
+                  </p>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Distribución Exacta de los 20 Minutos</h4>
+                  <ul contenteditable="true" data-field="tc_tiempo_desglose">
+                    <li><strong>3 min:</strong> Formación de tríos asignados por docente, lectura del caso y asignación de roles.</li>
+                    <li><strong>10 min:</strong> Selección de datos, redacción del borrador y transcripción en papelógrafo/tarjeta gigante.</li>
+                    <li><strong>7 min:</strong> Revisión estructural por código de colores y mejora conjunta antes de exponer.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-box full-span">
+                  <h4>Organización de Equipos y Roles Obligatorios (Asignados por la Docente)</h4>
+                  <p style="margin-bottom: 0.45rem;" contenteditable="true" data-field="tc_organizacion">
+                    La docente conforma previamente <strong>equipos de 3 integrantes</strong> (organizados heterogéneamente por la docente, no por afinidad) y entrega tarjetas de rol para asegurar la participación equitativa:
+                  </p>
+                  <div class="roles-grid">
+                    <div class="role-chip" contenteditable="true" data-field="tc_rol1">
+                      <strong>1. Coordinador/a de tiempo y turnos</strong>
+                      Organiza los turnos de palabra (Hábito 5), vigila el reloj y asegura que los 3 integrantes participen.
+                    </div>
+                    <div class="role-chip" contenteditable="true" data-field="tc_rol2">
+                      <strong>2. Constructor/a de idea principal y cohesión</strong>
+                      Propone la oración principal, selecciona los datos clave y verifica que todas las ideas hablen del mismo tema.
+                    </div>
+                    <div class="role-chip" contenteditable="true" data-field="tc_rol3">
+                      <strong>3. Revisor/a de estructura y ortografía</strong>
+                      Comprueba mayúsculas iniciales, conectores (además, también, por eso), punto y seguido y punto final.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="detail-box full-span">
+                  <h4>Instrucciones Paso a Paso</h4>
+                  <ol contenteditable="true" data-field="tc_pasos">
+                    <li>Cada trío recibe una <strong>Tarjeta-Caso Real</strong> con un banco de 5 datos breves (4 pertinentes y 1 distractor) sobre una campaña escolar: <em>"El cuidado del agua en el Colegio Montano"</em> o <em>"Mantenemos limpia y ordenada nuestra aula"</em>.</li>
+                    <li>Aplicando el <strong>Hábito 5</strong>, escuchan las propuestas de cada integrante, descartan el dato distractor y acuerdan una <strong>idea principal</strong> clara.</li>
+                    <li>Redactan un párrafo informativo de <strong>4 oraciones</strong> en un medio pliego de cartulina (papelógrafo/tarjeta gigante), uniendo la idea principal y tres ideas secundarias mediante conectores sencillos (<em>además, también, por eso</em>).</li>
+                    <li>En los últimos 7 minutos, subrayan con marcador <strong>amarillo</strong> su idea principal y revisan en conjunto la caligrafía y puntuación para dejarlo listo para la galería.</li>
+                  </ol>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Recursos y Producto Final Colectivo</h4>
+                  <p contenteditable="true" data-field="tc_producto">
+                    <strong>Recursos:</strong> Tarjetas-caso con banco de datos, tarjetas de 3 roles, papelógrafos/tarjetas gigantes de cartulina, marcadores azul y amarillo.<br>
+                    <strong>Producto final:</strong> Párrafo informativo colectivo en papelógrafo con idea principal destacada en amarillo y 3 ideas secundarias coherentes.
+                  </p>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Criterios de Evaluación del Equipo</h4>
+                  <p contenteditable="true" data-field="tc_criterios">
+                    Desempeño activo de los 3 roles, exclusión del dato distractor, claridad de la idea principal, cohesión entre las 4 oraciones y uso correcto de mayúsculas y puntos.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- MOMENTO 4: P (7 MINUTOS) -->
+          <article class="moment-panel" id="panel-p">
+            <div class="moment-header">
+              <div class="moment-header-title">
+                <span class="moment-pill">P</span>
+                <h3>Plenaria y Cierre</h3>
+              </div>
+              <div class="moment-duration-control">
+                <label for="inputTimeP">Duración:</label>
+                <input type="number" id="inputTimeP" class="moment-duration-input" value="7" min="1" max="50" data-moment="p">
+                <span>min</span>
+              </div>
+            </div>
+            <div class="moment-body">
+              <div class="activity-banner">
+                <div class="activity-banner-label">Nombre de la Actividad</div>
+                <div class="activity-banner-title" contenteditable="true" data-field="p_nombre">
+                  "Galería relámpago y semáforo del párrafo"
+                </div>
+              </div>
+
+              <div class="moment-grid">
+                <div class="detail-box">
+                  <h4>Propósito Didáctico</h4>
+                  <p contenteditable="true" data-field="p_proposito">
+                    Socializar los párrafos construidos en equipo, contrastar la identificación de ideas principales, brindar retroalimentación inmediata y verificar individualmente el logro de aprendizaje mediante un Ticket de Salida.
+                  </p>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Distribución Exacta de los 7 Minutos</h4>
+                  <ul contenteditable="true" data-field="p_tiempo_desglose">
+                    <li><strong>3 min:</strong> Socialización relámpago de 2 a 3 equipos y contraste de ideas principales.</li>
+                    <li><strong>2 min:</strong> Retroalimentación docente y síntesis de cierre ("Semáforo del párrafo").</li>
+                    <li><strong>2 min:</strong> Resolución y entrega individual del Ticket de Salida.</li>
+                  </ul>
+                </div>
+
+                <div class="detail-box full-span">
+                  <h4>Instrucciones Paso a Paso y Estrategia de Evaluación de Salida</h4>
+                  <ol contenteditable="true" data-field="p_pasos">
+                    <li>Los equipos colocan sus papelógrafos al frente. La docente invita a <strong>2 o 3 equipos</strong> a leer su párrafo en 45 segundos y señalar cuál es su idea principal y qué ideas secundarias la acompañan.</li>
+                    <li>La clase contrasta si todas las oraciones hablan del mismo tema y la docente refuerza con la metáfora del <strong>"Semáforo del párrafo"</strong>: <em>Verde = Idea principal que arranca el tema; Amarillo = Ideas secundarias que amplían; Rojo = Punto final que cierra la idea</em>.</li>
+                    <li><strong>Ticket de Salida Individual (2 minutos):</strong> Cada estudiante recibe una tarjeta impresa con un párrafo corto de 4 oraciones donde debe: (a) tachar la <strong>oración intrusa</strong> que no corresponde al tema, y (b) subrayar la <strong>idea principal</strong>. Entrega su ticket en el buzón al salir.</li>
+                  </ol>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Recursos del Momento</h4>
+                  <p contenteditable="true" data-field="p_recursos">
+                    Papelógrafos de los equipos, cinta adhesiva, tarjetas impresas de Ticket de Salida y buzón de recolección en el aula.
+                  </p>
+                </div>
+
+                <div class="detail-box">
+                  <h4>Evidencia Final de Aprendizaje</h4>
+                  <p contenteditable="true" data-field="p_evidencia">
+                    Ticket de salida individual resuelto (identificación de idea principal y detección de oración intrusa), junto con el papelógrafo colectivo del equipo.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         6. RECURSOS DIDÁCTICOS DEL AULA PRESENCIAL
+         ====================================================================== -->
+    <section class="card" aria-labelledby="sec6-title">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="section-number">6</span>
+          <h2 id="sec6-title">Recursos Didácticos (Aula Presencial)</h2>
+        </div>
+        <span class="card-badge">Materiales manipulativos e impresos</span>
+      </div>
+      <div class="card-body">
+        <div class="resources-grid">
+          <div class="resource-pill">
+            <span class="resource-icon">1</span>
+            <span class="resource-text" contenteditable="true" data-field="rec_1">Pizarra, cinta adhesiva y marcadores institucionales (azul y amarillo).</span>
+          </div>
+          <div class="resource-pill">
+            <span class="resource-icon">2</span>
+            <span class="resource-text" contenteditable="true" data-field="rec_2">5 tiras de cartulina con oraciones desordenadas para el rompecabezas inicial (IM).</span>
+          </div>
+          <div class="resource-pill">
+            <span class="resource-icon">3</span>
+            <span class="resource-text" contenteditable="true" data-field="rec_3">Guía impresa individual "Laboratorio del Párrafo" (lectura y análisis por colores).</span>
+          </div>
+          <div class="resource-pill">
+            <span class="resource-icon">4</span>
+            <span class="resource-text" contenteditable="true" data-field="rec_4">Tarjetas-caso con banco de datos escolares y tarjetas de 3 roles cooperativos.</span>
+          </div>
+          <div class="resource-pill">
+            <span class="resource-icon">5</span>
+            <span class="resource-text" contenteditable="true" data-field="rec_5">Papelógrafos / tarjetas gigantes de cartulina para la redacción en tríos.</span>
+          </div>
+          <div class="resource-pill">
+            <span class="resource-icon">6</span>
+            <span class="resource-text" contenteditable="true" data-field="rec_6">Cuaderno de Comunicación y Lenguaje, lápiz, crayones de colores y Tickets de Salida impresos.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         7. EVALUACIÓN DEL APRENDIZAJE (3 MOMENTOS)
+         ====================================================================== -->
+    <section class="card" aria-labelledby="sec7-title">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="section-number">7</span>
+          <h2 id="sec7-title">Evaluación del Aprendizaje</h2>
+        </div>
+        <span class="card-badge">Evaluación Continua y Formativa</span>
+      </div>
+      <div class="card-body">
+        <div class="eval-moments-grid">
+          <div class="eval-card">
+            <span class="eval-type-badge">Evaluación Inicial · Diagnóstica (IM)</span>
+            <h3>Diagnóstico en "El rompecabezas del mensaje"</h3>
+            <p contenteditable="true" data-field="eval_inicial">
+              <strong>Evidencia formativa (sin calificación numérica):</strong> Observación de las respuestas orales y participación al ordenar las tiras de cartulina y descartar la oración intrusa, verificando si reconocen cuándo varias oraciones mantienen un mismo tema.
+            </p>
+          </div>
+
+          <div class="eval-card">
+            <span class="eval-type-badge">Evaluación Formativa · Proceso (TP y TC)</span>
+            <h3>Monitoreo Guiado y Revisión entre Pares</h3>
+            <p contenteditable="true" data-field="eval_formativa">
+              <strong>Evidencia formativa (sin calificación numérica):</strong> Preguntas de seguimiento durante el subrayado por colores en la guía individual (TP) y acompañamiento directo a cada trío verificando el cumplimiento de roles y la cohesión del borrador (TC).
+            </p>
+          </div>
+
+          <div class="eval-card sumativa">
+            <span class="eval-type-badge">Evaluación Sumativa · Cierre (TC y P)</span>
+            <h3>Valoración con Lista de Cotejo Institucional</h3>
+            <p contenteditable="true" data-field="eval_sumativa">
+              <strong>Actividad calificada según planificación institucional:</strong> Valoración del párrafo colectivo en papelógrafo (TC) y del párrafo individual / Ticket de Salida (TP–P) mediante la Lista de Cotejo de la Sección 8, alineada directamente al logro de aprendizaje.
+            </p>
+          </div>
+        </div>
+
+        <div class="feedback-improvement-box">
+          <h4>💡 Retroalimentación Específica y Oportunidad de Mejora</h4>
+          <p contenteditable="true" data-field="eval_mejora">
+            <strong>Retroalimentación específica:</strong> Durante la revisión del borrador en TP y TC, la docente señala con precisión qué oración aporta información relevante y cuál necesita un conector o punto y seguido para evitar oraciones excesivamente largas.<br>
+            <strong>Oportunidad de mejora:</strong> Si en el Ticket de Salida o en el cuaderno un estudiante confunde la idea principal con un detalle secundario o incluye ideas desconectadas, realizará una actividad breve de refuerzo guiado con <em>"Tarjetas de Clasificación de Ideas"</em> (1 idea principal + 2 detalles) antes de la siguiente clase de redacción.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         8. INSTRUMENTO DE EVALUACIÓN INTERACTIVO (LISTA DE COTEJO)
+         ====================================================================== -->
+    <section class="card" aria-labelledby="sec8-title">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="section-number">8</span>
+          <h2 id="sec8-title">Instrumento de Evaluación — Lista de Cotejo Interactiva</h2>
+        </div>
+        <span class="card-badge">Cálculo Automático de Logro</span>
+      </div>
+      <div class="card-body">
+
+        <div class="rubric-summary-bar">
+          <div class="rubric-score-box">
+            <div class="score-circle" id="rubricPercentage">100%</div>
+            <div>
+              <strong style="display:block; font-size:0.95rem;" id="rubricLevelLabel">Nivel de Desempeño: Logro Destacado (100%)</strong>
+              <span style="font-size:0.82rem; opacity:0.9;" id="rubricCountsText">5 de 5 criterios logrados · 0 en proceso · 0 requieren apoyo</span>
+            </div>
+          </div>
+          <div class="rubric-recommendation" id="rubricFeedbackText">
+            El estudiante o equipo identifica la idea principal y las secundarias con precisión y redacta párrafos coherentes y bien puntuados.
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="checklist-table" id="checklistTable">
+            <thead>
+              <tr>
+                <th style="width: 44%;">Criterio Observable (Alineado a Competencia y Logro)</th>
+                <th style="width: 18%;">Evidencia</th>
+                <th style="width: 32%;">Estado de Evaluación</th>
+                <th style="width: 6%;" class="no-print">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="checklistBody">
+              <tr data-status="logrado">
+                <td contenteditable="true">1. Identifica correctamente la idea principal y al menos dos ideas secundarias en un párrafo corto mediante el subrayado por colores.</td>
+                <td contenteditable="true">Guía TP / Ticket</td>
+                <td>
+                  <div class="status-selector">
+                    <button type="button" class="status-opt selected-logrado" data-val="logrado">Logrado</button>
+                    <button type="button" class="status-opt" data-val="proceso">En proceso</button>
+                    <button type="button" class="status-opt" data-val="apoyo">Requiere apoyo</button>
+                  </div>
+                </td>
+                <td class="no-print"><button type="button" class="btn-remove-row" title="Eliminar criterio">✕</button></td>
+              </tr>
+              <tr data-status="logrado">
+                <td contenteditable="true">2. Redacta un párrafo estructurado de 3 a 4 oraciones en el que todas las ideas mantienen unidad temática sin oraciones intrusas.</td>
+                <td contenteditable="true">Cuaderno TP / TC</td>
+                <td>
+                  <div class="status-selector">
+                    <button type="button" class="status-opt selected-logrado" data-val="logrado">Logrado</button>
+                    <button type="button" class="status-opt" data-val="proceso">En proceso</button>
+                    <button type="button" class="status-opt" data-val="apoyo">Requiere apoyo</button>
+                  </div>
+                </td>
+                <td class="no-print"><button type="button" class="btn-remove-row" title="Eliminar criterio">✕</button></td>
+              </tr>
+              <tr data-status="logrado">
+                <td contenteditable="true">3. Enlaza las ideas secundarias con la idea principal utilizando conectores sencillos adecuados (además, también, por eso).</td>
+                <td contenteditable="true">Papelógrafo TC</td>
+                <td>
+                  <div class="status-selector">
+                    <button type="button" class="status-opt selected-logrado" data-val="logrado">Logrado</button>
+                    <button type="button" class="status-opt" data-val="proceso">En proceso</button>
+                    <button type="button" class="status-opt" data-val="apoyo">Requiere apoyo</button>
+                  </div>
+                </td>
+                <td class="no-print"><button type="button" class="btn-remove-row" title="Eliminar criterio">✕</button></td>
+              </tr>
+              <tr data-status="logrado">
+                <td contenteditable="true">4. Aplica mayúscula inicial al comenzar el párrafo y después de punto, empleando correctamente punto y seguido y punto final.</td>
+                <td contenteditable="true">TP / TC</td>
+                <td>
+                  <div class="status-selector">
+                    <button type="button" class="status-opt selected-logrado" data-val="logrado">Logrado</button>
+                    <button type="button" class="status-opt" data-val="proceso">En proceso</button>
+                    <button type="button" class="status-opt" data-val="apoyo">Requiere apoyo</button>
+                  </div>
+                </td>
+                <td class="no-print"><button type="button" class="btn-remove-row" title="Eliminar criterio">✕</button></td>
+              </tr>
+              <tr data-status="logrado">
+                <td contenteditable="true">5. Cumple activamente el rol asignado en su trío cooperativo, escucha con respeto y contribuye a la mejora del producto final.</td>
+                <td contenteditable="true">TC / Plenaria</td>
+                <td>
+                  <div class="status-selector">
+                    <button type="button" class="status-opt selected-logrado" data-val="logrado">Logrado</button>
+                    <button type="button" class="status-opt" data-val="proceso">En proceso</button>
+                    <button type="button" class="status-opt" data-val="apoyo">Requiere apoyo</button>
+                  </div>
+                </td>
+                <td class="no-print"><button type="button" class="btn-remove-row" title="Eliminar criterio">✕</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rubric-actions no-print">
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary" id="addCriterionBtn">
+              + Agregar criterio
+            </button>
+            <button type="button" class="btn btn-secondary" id="resetChecklistBtn">
+              ↺ Reiniciar evaluación
+            </button>
+          </div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">
+            Haz clic en cada criterio para editarlo o selecciona su estado para calcular el nivel de desempeño.
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         9. OBSERVACIONES Y REFLEXIÓN DOCENTE
+         ====================================================================== -->
+    <section class="card" aria-labelledby="sec9-title">
+      <div class="card-header">
+        <div class="card-title-group">
+          <span class="section-number">9</span>
+          <h2 id="sec9-title">Observaciones y Reflexión Docente</h2>
+        </div>
+        <span class="card-badge">Bitácora Pedagógica Post-Clase</span>
+      </div>
+      <div class="card-body">
+        <div class="reflection-grid">
+          <div class="reflection-box">
+            <label>Observaciones durante la clase</label>
+            <div class="reflection-area" contenteditable="true" data-field="obs_clase">
+              Espacio para registrar el nivel de participación en "El rompecabezas del mensaje perdido", ritmo de lectura y dinámica de los tríos durante la sesión presencial...
+            </div>
+          </div>
+
+          <div class="reflection-box">
+            <label>Ajustes metodológicos realizados</label>
+            <div class="reflection-area" contenteditable="true" data-field="obs_ajustes_met">
+              Espacio para anotar adecuaciones de tiempo, ejemplos adicionales en pizarra o apoyos visuales brindados durante el desarrollo de la clase...
+            </div>
+          </div>
+
+          <div class="reflection-box">
+            <label>Seguimiento a estudiantes con necesidades de apoyo</label>
+            <div class="reflection-area" contenteditable="true" data-field="obs_apoyo">
+              Se entrega plantilla guía con conectores sugeridos (Además, También, Por eso) y código de colores a los estudiantes que requieren estructuración visual paso a paso.
+            </div>
+          </div>
+
+          <div class="reflection-box">
+            <label>Reflexión pedagógica post-clase</label>
+            <div class="reflection-area" contenteditable="true" data-field="obs_reflexion">
+              Evaluar el impacto de los roles cooperativos en la calidad de los párrafos producidos y definir el punto de partida para la próxima sesión de ampliación textual.
+            </div>
+          </div>
+        </div>
+
+        <div class="signatures-row">
+          <div>
+            <div class="signature-line" contenteditable="true" data-field="firma_docente">
+              Profa. Sara Rivera · Docente Titular
+            </div>
+          </div>
+          <div>
+            <div class="signature-line" contenteditable="true" data-field="firma_coordinacion">
+              Coordinación Académica · Colegio Montano
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       MODAL DE CONFIRMACIÓN PARA RESTABLECER PLANTILLA
+       ======================================================================== -->
+  <div class="modal-backdrop no-print" id="resetModal" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+    <div class="modal-box">
+      <h3 id="resetModalTitle">¿Restablecer plantilla original?</h3>
+      <p>
+        Esta acción eliminará los cambios guardados en este navegador y restaurará los datos predeterminados del <strong>Plan N.° 14 — El párrafo y su estructura (Colegio Montano)</strong>.
+      </p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" id="cancelResetBtn">Cancelar</button>
+        <button type="button" class="btn btn-accent" id="confirmResetBtn">Sí, restablecer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notificación flotante -->
+  <div class="toast no-print" id="toastNotification" role="status" aria-live="polite"></div>
+
+  <!-- ========================================================================
+       LÓGICA INTERACTIVA (NAVEGACIÓN, TIEMPOS, RÚBRICA, STORAGE Y EXPORTACIÓN)
+       ======================================================================== -->
+  <script>
+    (function () {
+      const STORAGE_KEY = 'colegio_montano_plan_14_parrafo_v1';
+      let initialSnapshot = null;
+      let saveTimeout = null;
+
+      // Referencias DOM principales
+      const body = document.body;
+      const toggleEditBtn = document.getElementById('toggleEditBtn');
+      const manualSaveBtn = document.getElementById('manualSaveBtn');
+      const exportHtmlBtn = document.getElementById('exportHtmlBtn');
+      const printPdfBtn = document.getElementById('printPdfBtn');
+      const resetModalBtn = document.getElementById('resetModalBtn');
+      const resetModal = document.getElementById('resetModal');
+      const cancelResetBtn = document.getElementById('cancelResetBtn');
+      const confirmResetBtn = document.getElementById('confirmResetBtn');
+      const saveStatusText = document.getElementById('saveStatusText');
+      const toastEl = document.getElementById('toastNotification');
+
+      // Mostrar notificación temporal
+      function showToast(message) {
+        toastEl.textContent = message;
+        toastEl.classList.add('show');
+        clearTimeout(toastEl._timer);
+        toastEl._timer = setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 2800);
+      }
+
+      // 1. Alternar Modo Edición / Modo Lectura
+      toggleEditBtn.addEventListener('click', () => {
+        const isEditing = body.classList.toggle('edit-mode');
+        const editables = document.querySelectorAll('[contenteditable]');
+        editables.forEach(el => {
+          el.setAttribute('contenteditable', isEditing ? 'true' : 'false');
+        });
+
+        if (isEditing) {
+          toggleEditBtn.textContent = '✎ Modo Edición: Activo';
+          toggleEditBtn.classList.add('btn-mode-active');
+          toggleEditBtn.classList.remove('btn-secondary');
+          showToast('Modo edición activado: haz clic sobre cualquier texto para modificarlo.');
+        } else {
+          toggleEditBtn.textContent = '👁 Modo Lectura';
+          toggleEditBtn.classList.remove('btn-mode-active');
+          toggleEditBtn.classList.add('btn-secondary');
+          showToast('Modo lectura activado.');
+        }
+      });
+
+      // 2. Navegación por pestañas en la Secuencia Didáctica (IM - TP - TC - P)
+      const tabButtons = document.querySelectorAll('.tab-btn[data-target]');
+      const momentPanels = document.querySelectorAll('.moment-panel');
+      const viewAllMomentsBtn = document.getElementById('viewAllMomentsBtn');
+      const sequenceContainer = document.getElementById('sequenceContainer');
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          sequenceContainer.classList.remove('show-all');
+          viewAllMomentsBtn.classList.remove('active');
+          viewAllMomentsBtn.textContent = '☰ Ver secuencia completa';
+
+          tabButtons.forEach(b => b.classList.remove('active'));
+          momentPanels.forEach(p => p.classList.remove('active'));
+
+          btn.classList.add('active');
+          const targetPanel = document.getElementById(btn.dataset.target);
+          if (targetPanel) targetPanel.classList.add('active');
+        });
+      });
+
+      viewAllMomentsBtn.addEventListener('click', () => {
+        const isShowingAll = sequenceContainer.classList.toggle('show-all');
+        if (isShowingAll) {
+          tabButtons.forEach(b => b.classList.remove('active'));
+          viewAllMomentsBtn.classList.add('active');
+          viewAllMomentsBtn.textContent = '▣ Vista por pestañas';
+        } else {
+          viewAllMomentsBtn.classList.remove('active');
+          viewAllMomentsBtn.textContent = '☰ Ver secuencia completa';
+          tabButtons[0].click();
+        }
+      });
+
+      // 3. Recálculo dinámico del tiempo de los 4 momentos (Exactamente 50 minutos)
+      const timeInputs = {
+        im: document.getElementById('inputTimeIM'),
+        tp: document.getElementById('inputTimeTP'),
+        tc: document.getElementById('inputTimeTC'),
+      // 5. Lista de Cotejo Interactiva (Cálculo automático y agregar/eliminar/reiniciar criterios)
+      const checklistBody = document.getElementById('checklistBody');
+      const addCriterionBtn = document.getElementById('addCriterionBtn');
+      const resetChecklistBtn = document.getElementById('resetChecklistBtn');
+
+      function recalculateChecklist() {
+        const rows = checklistBody.querySelectorAll('tr');
+        const total = rows.length;
+        let logrado = 0;
+        let proceso = 0;
+        let apoyo = 0;
+
+        rows.forEach(row => {
+          const status = row.dataset.status || 'logrado';
+          if (status === 'logrado') logrado++;
+          else if (status === 'proceso') proceso++;
+          else apoyo++;
+        });
+
+        // Puntaje ponderado: Logrado = 1 pt, En proceso = 0.5 pt, Requiere apoyo = 0 pt
+        const score = total > 0 ? Math.round(((logrado + proceso * 0.5) / total) * 100) : 0;
+
+        document.getElementById('rubricPercentage').textContent = `${score}%`;
+        document.getElementById('rubricCountsText').textContent =
+          `${logrado} de ${total} criterios logrados · ${proceso} en proceso · ${apoyo} requieren apoyo`;
+
+        const levelEl = document.getElementById('rubricLevelLabel');
+        const recEl = document.getElementById('rubricFeedbackText');
+
+        if (score >= 85) {
+          levelEl.textContent = `Nivel de Desempeño: Logro Destacado (${score}%)`;
+          recEl.textContent = 'El estudiante o equipo identifica la idea principal y las secundarias con precisión y redacta párrafos coherentes y bien puntuados.';
+        } else if (score >= 65) {
+          levelEl.textContent = `Nivel de Desempeño: En Desarrollo Satisfactorio (${score}%)`;
+          recEl.textContent = 'Retroalimentación sugerida: reforzar el uso de conectores y verificar que todas las oraciones secundarias desarrollen la idea principal.';
+        } else {
+          levelEl.textContent = `Nivel de Desempeño: Requiere Acompañamiento (${score}%)`;
+          recEl.textContent = 'Activar oportunidad de mejora: trabajar con las "Tarjetas de Clasificación de Ideas" (1 idea principal + 2 detalles) en acompañamiento guiado.';
+        }
+      }
+
+      Object.values(timeInputs).forEach(input => {
+        input.addEventListener('input', () => {
+          updateTimeDistribution();
+          scheduleAutoSave();
+        });
+      });
+
+      headerDurationValue.addEventListener('input', () => {
+        updateTimeDistribution();
+        scheduleAutoSave();
+      });
+
+      // 4. Checkboxes de Competencias Clave y Blandas
+      function bindCompetencyCheckboxes() {
+        document.querySelectorAll('.comp-check').forEach(chk => {
+          chk.addEventListener('change', () => {
+            const card = chk.closest('.comp-item');
+            if (card) {
+              card.classList.toggle('unchecked', !chk.checked);
+            }
+            scheduleAutoSave();
+          });
+        });
+      }
+
+      // 5. Lista de Cotejo Interactiva (Cálculo automático y agregar/eliminar criterios)
+      const checklistBody = document.getElementById('checklistBody');
+      const addCriterionBtn = document.getElementById('addCriterionBtn');
+
+      function recalculateChecklist() {
+        const rows = checklistBody.querySelectorAll('tr');
+        const total = rows.length;
+        let logrado = 0;
+        let proceso = 0;
+        let apoyo = 0;
+
+        rows.forEach(row => {
+          const status = row.dataset.status || 'logrado';
+          if (status === 'logrado') logrado++;
+          else if (status === 'proceso') proceso++;
+          else apoyo++;
+        });
+
+        // Puntaje ponderado: Logrado = 1 pt, En proceso = 0.5 pt, Requiere apoyo = 0 pt
+        const score = total > 0 ? Math.round(((logrado + proceso * 0.5) / total) * 100) : 0;
+
+        document.getElementById('rubricPercentage').textContent = `${score}%`;
+        document.getElementById('rubricCountsText').textContent =
+          `${logrado} de ${total} criterios logrados · ${proceso} en proceso · ${apoyo} requieren apoyo`;
+
+        const levelEl = document.getElementById('rubricLevelLabel');
+        const recEl = document.getElementById('rubricFeedbackText');
+
+        if (score >= 85) {
+          levelEl.textContent = 'Nivel de Logro: Excelente (Meta ≥ 85% alcanzada)';
+          recEl.textContent = 'El desempeño observado evidencia dominio sólido de las reglas de mayúsculas al inicio de oración, tras punto y en nombres propios.';
+        } else if (score >= 65) {
+          levelEl.textContent = 'Nivel de Logro: Satisfactorio en Desarrollo (< 85%)';
+          recEl.textContent = 'Retroalimentación sugerida: reforzar la distinción entre sustantivos propios y comunes mediante ejercicios breves guiados.';
+        } else {
+          levelEl.textContent = 'Nivel de Logro: Requiere Acompañamiento (< 65%)';
+          recEl.textContent = 'Activar oportunidad de mejora: aplicar las "Tarjetas de Autocorrector Rápido" en tutoría de pares al inicio de la próxima sesión.';
+        }
+      }
+
+      checklistBody.addEventListener('click', (e) => {
+        const optBtn = e.target.closest('.status-opt');
+        if (optBtn) {
+          const row = optBtn.closest('tr');
+          const val = optBtn.dataset.val;
+          row.dataset.status = val;
+
+          row.querySelectorAll('.status-opt').forEach(b => {
+            b.classList.remove('selected-logrado', 'selected-proceso', 'selected-apoyo');
+          });
+          optBtn.classList.add(`selected-${val}`);
+
+          recalculateChecklist();
+          scheduleAutoSave();
+          return;
+        }
+
+        const removeBtn = e.target.closest('.btn-remove-row');
+        if (removeBtn) {
+          const rows = checklistBody.querySelectorAll('tr');
+          if (rows.length <= 1) {
+            showToast('Debe mantenerse al menos un criterio en la lista de cotejo.');
+            return;
+          }
+          removeBtn.closest('tr').remove();
+          recalculateChecklist();
+          scheduleAutoSave();
+        }
+      });
+
+      addCriterionBtn.addEventListener('click', () => {
+        const nextNum = checklistBody.querySelectorAll('tr').length + 1;
+        const tr = document.createElement('tr');
+        tr.dataset.status = 'logrado';
+        tr.innerHTML = `
+          <td contenteditable="true">${nextNum}. Nuevo criterio observable alineado al logro de aprendizaje.</td>
+          <td contenteditable="true">TP / TC</td>
+          <td>
+            <div class="status-selector">
+              <button type="button" class="status-opt selected-logrado" data-val="logrado">Logrado</button>
+              <button type="button" class="status-opt" data-val="proceso">En proceso</button>
+              <button type="button" class="status-opt" data-val="apoyo">Requiere apoyo</button>
+            </div>
+          </td>
+          <td class="no-print"><button type="button" class="btn-remove-row" title="Eliminar criterio">✕</button></td>
+        `;
+        checklistBody.appendChild(tr);
+        recalculateChecklist();
+        scheduleAutoSave();
+        showToast('Criterio agregado a la lista de cotejo.');
+      });
+
+      resetChecklistBtn.addEventListener('click', () => {
+        checklistBody.querySelectorAll('tr').forEach(row => {
+          row.dataset.status = 'logrado';
+          row.querySelectorAll('.status-opt').forEach(btn => {
+            btn.classList.remove('selected-logrado', 'selected-proceso', 'selected-apoyo');
+            if (btn.dataset.val === 'logrado') {
+              btn.classList.add('selected-logrado');
+            }
+          });
+        });
+        recalculateChecklist();
+        scheduleAutoSave();
+        showToast('Evaluación reiniciada a estado inicial.');
+      });
+
+      // 6. Almacenamiento Local (localStorage)
+      function serializePlanState() {
+        const fields = {};
+        document.querySelectorAll('[data-field]').forEach(el => {
+          fields[el.dataset.field] = el.innerHTML;
+        });
+
+        const checks = {};
+        document.querySelectorAll('.comp-item').forEach(item => {
+          const id = item.dataset.compId;
+          const chk = item.querySelector('.comp-check');
+          if (id && chk) checks[id] = chk.checked;
+        });
+
+        const times = {
+          im: timeInputs.im.value,
+          tp: timeInputs.tp.value,
+          tc: timeInputs.tc.value,
+          p: timeInputs.p.value
+        };
+
+        const checklistRows = [];
+        checklistBody.querySelectorAll('tr').forEach(row => {
+          const cells = row.querySelectorAll('td');
+          checklistRows.push({
+            criterion: cells[0].innerHTML,
+            evidence: cells[1].innerHTML,
+            status: row.dataset.status || 'logrado'
+          });
+        });
+
+        return { fields, checks, times, checklistRows, savedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+      }
+
+      function applyPlanState(state) {
+        if (!state) return;
+
+        if (state.fields) {
+          document.querySelectorAll('[data-field]').forEach(el => {
+            const key = el.dataset.field;
+            if (Object.prototype.hasOwnProperty.call(state.fields, key)) {
+              el.innerHTML = state.fields[key];
+            }
+          });
+        }
+
+        if (state.checks) {
+          document.querySelectorAll('.comp-item').forEach(item => {
+            const id = item.dataset.compId;
+            const chk = item.querySelector('.comp-check');
+            if (id && chk && Object.prototype.hasOwnProperty.call(state.checks, id)) {
+              chk.checked = state.checks[id];
+              item.classList.toggle('unchecked', !chk.checked);
+            }
+          });
+        }
+
+        if (state.times) {
+          if (state.times.im) timeInputs.im.value = state.times.im;
+          if (state.times.tp) timeInputs.tp.value = state.times.tp;
+          if (state.times.tc) timeInputs.tc.value = state.times.tc;
+          if (state.times.p)  timeInputs.p.value  = state.times.p;
+          updateTimeDistribution();
+        }
+
+        if (Array.isArray(state.checklistRows) && state.checklistRows.length > 0) {
+          checklistBody.innerHTML = '';
+          state.checklistRows.forEach(item => {
+            const tr = document.createElement('tr');
+            const st = item.status || 'logrado';
+            tr.dataset.status = st;
+            tr.innerHTML = `
+              <td contenteditable="true">${item.criterion}</td>
+              <td contenteditable="true">${item.evidence}</td>
+              <td>
+                <div class="status-selector">
+                  <button type="button" class="status-opt ${st === 'logrado' ? 'selected-logrado' : ''}" data-val="logrado">Logrado</button>
+                  <button type="button" class="status-opt ${st === 'proceso' ? 'selected-proceso' : ''}" data-val="proceso">En proceso</button>
+                  <button type="button" class="status-opt ${st === 'apoyo' ? 'selected-apoyo' : ''}" data-val="apoyo">Requiere apoyo</button>
+                </div>
+              </td>
+              <td class="no-print"><button type="button" class="btn-remove-row" title="Eliminar criterio">✕</button></td>
+            `;
+            checklistBody.appendChild(tr);
+          });
+          recalculateChecklist();
+        }
+
+        if (state.savedAt) {
+          saveStatusText.textContent = `Guardado en navegador (${state.savedAt})`;
+        }
+      }
+
+      function saveToLocalStorage(showFeedback = false) {
+        try {
+          const state = serializePlanState();
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          saveStatusText.textContent = `Guardado en navegador (${state.savedAt})`;
+          if (showFeedback) {
+            showToast('Planificación guardada correctamente en el navegador.');
+          }
+        } catch (err) {
+          saveStatusText.textContent = 'Aviso: almacenamiento local no disponible';
+        }
+      }
+
+      function scheduleAutoSave() {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => saveToLocalStorage(false), 600);
+      }
+
+      document.getElementById('planDocument').addEventListener('input', scheduleAutoSave);
+      manualSaveBtn.addEventListener('click', () => saveToLocalStorage(true));
+
+      // 7. Exportar Plan como archivo HTML autocontenido con las ediciones actuales
+      exportHtmlBtn.addEventListener('click', () => {
+        // Sincronizar valores de inputs numéricos al atributo value antes de clonar
+        Object.values(timeInputs).forEach(inp => inp.setAttribute('value', inp.value));
+
+        const docClone = document.documentElement.cloneNode(true);
+        const exportedHtml = '<!DOCTYPE html>\n' + docClone.outerHTML;
+        const blob = new Blob([exportedHtml], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        const temaText = (document.querySelector('[data-field="tema"]')?.textContent || 'Plan_Clase')
+          .trim()
+          .slice(0, 32)
+          .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ_-]+/g, '_');
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Colegio_Montano_Plan14_${temaText}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Archivo HTML descargado con todos tus cambios.');
+      });
+
+      // 8. Imprimir / Guardar PDF
+      printPdfBtn.addEventListener('click', () => {
+        window.print();
+      });
+
+      // 9. Restablecer plantilla con modal de confirmación personalizado
+      resetModalBtn.addEventListener('click', () => {
+        resetModal.classList.add('open');
+      });
+
+      cancelResetBtn.addEventListener('click', () => {
+        resetModal.classList.remove('open');
+      });
+
+      resetModal.addEventListener('click', (e) => {
+        if (e.target === resetModal) resetModal.classList.remove('open');
+      });
+
+      confirmResetBtn.addEventListener('click', () => {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch (e) {}
+        if (initialSnapshot) {
+          applyPlanState(initialSnapshot);
+        }
+        resetModal.classList.remove('open');
+        saveStatusText.textContent = 'Plantilla restablecida a valores originales';
+        showToast('Se han restaurado los datos originales de la planificación.');
+      });
+
+      // Inicialización al cargar la página
+      window.addEventListener('DOMContentLoaded', () => {
+        initialSnapshot = serializePlanState();
+        bindCompetencyCheckboxes();
+        updateTimeDistribution();
+        recalculateChecklist();
+
+        try {
+          const savedRaw = localStorage.getItem(STORAGE_KEY);
+          if (savedRaw) {
+            const parsed = JSON.parse(savedRaw);
+            applyPlanState(parsed);
+          }
+        } catch (err) {
+          // Continuar con valores por defecto si no hay datos válidos
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
